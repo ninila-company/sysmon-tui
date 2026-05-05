@@ -1,0 +1,14 @@
+[package]
+name = "sysmon-tui"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ratatui = "0.29"
+crossterm = "0.28"
+sysinfo = "0.33"
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
+anyhow = "1"
+docker-api = "0.12"
+chrono = "0.4"
