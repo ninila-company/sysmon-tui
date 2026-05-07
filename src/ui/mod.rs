@@ -13,7 +13,7 @@ mod disks;
 mod network;
 mod docker;
 
-pub fn draw(frame: &mut Frame, app: &App) {
+pub fn draw(frame: &mut Frame, app: &mut App) {
     let chunks = Layout::default()
         .constraints([
             Constraint::Length(3),
@@ -98,7 +98,7 @@ fn draw_header(frame: &mut Frame, area: ratatui::layout::Rect, app: &App) {
     frame.render_widget(info_widget, chunks[2]);
 }
 
-fn draw_main_content(frame: &mut Frame, area: ratatui::layout::Rect, app: &App) {
+fn draw_main_content(frame: &mut Frame, area: ratatui::layout::Rect, app: &mut App) {
     match app.selected_tab {
         Tab::Cpu => {
             cpu::draw(frame, area, app);

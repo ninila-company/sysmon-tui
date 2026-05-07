@@ -4,7 +4,7 @@ use ratatui::style::{Color, Style};
 use ratatui::symbols;
 use ratatui::widgets::{Block, Gauge, Paragraph, Sparkline};
 
-pub fn draw(frame: &mut Frame, area: Rect, app: &crate::app::App) {
+pub fn draw(frame: &mut Frame, area: Rect, app: &mut crate::app::App) {
     let main_chunks = Layout::horizontal([
         Constraint::Percentage(40),
         Constraint::Percentage(60),

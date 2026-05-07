@@ -1,11 +1,11 @@
 use ratatui::Frame;
-use ratatui::layout::{Constraint, Rect};
+use ratatui::layout::{Constraint, Margin, Rect};
 use ratatui::style::{Color, Modifier, Style};
-use ratatui::widgets::{Block, Row, Table};
+use ratatui::widgets::{Block, Row, Scrollbar, ScrollbarOrientation, ScrollbarState, Table, TableState};
 
 use crate::app::App;
 
-pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
+pub fn draw(frame: &mut Frame, area: Rect, app: &mut App) {
     let sorted = app.sorted_processes();
 
     let header_labels = [
@@ -92,5 +92,27 @@ pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
         )
         .highlight_symbol("▌ ");
 
-    frame.render_widget(table, area);
+    let mut state = TableState::default();
+    state.select(Some(app.process_selected));
+
+    frame.render_stateful_widget(table, area, &mut state);
+
+    // Draw scrollbar if needed
+    if app.total_processes > max_rows {
+        let mut scrollbar_state = ScrollbarState::new(app.total_processes)
+            .position(app.process_selected)
+            .viewport_content_length(max_rows);
+
+        let scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+            .begin_symbol(Some("↑"))
+            .end_symbol(Some("↓"))
+            .track_symbol(Some("│"))
+            .thumb_symbol("█");
+
+        frame.render_stateful_widget(
+            scrollbar,
+            area.inner(Margin { vertical: 1, horizontal: 0 }),
+            &mut scrollbar_state,
+        );
+    }
 }

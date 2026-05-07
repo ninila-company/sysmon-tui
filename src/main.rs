@@ -86,7 +86,7 @@ async fn main() -> Result<()> {
             app.tick();
         }
 
-        terminal.draw(|frame| ui::draw(frame, &app))?;
+            terminal.draw(|frame| ui::draw(frame, &mut app))?;
 
         let action = handle_event(&mut app)?;
         apply_action(&mut app, action);

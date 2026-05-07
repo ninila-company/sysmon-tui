@@ -6,7 +6,7 @@ use ratatui::widgets::{Block, Paragraph, Row, Sparkline, Table};
 
 use crate::app::App;
 
-pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
+pub fn draw(frame: &mut Frame, area: Rect, app: &mut App) {
     let chunks = Layout::vertical([
         Constraint::Length(5),
         Constraint::Length(5),

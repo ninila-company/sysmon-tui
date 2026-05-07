@@ -12,6 +12,8 @@ pub enum AppAction {
     ScrollDown,
     PageUp,
     PageDown,
+    Left,
+    Right,
     ToggleSort,
     ToggleHelp,
     None,
@@ -46,6 +48,8 @@ pub fn handle_event(_app: &mut App) -> anyhow::Result<AppAction> {
                     KeyCode::Down => AppAction::ScrollDown,
                     KeyCode::PageUp => AppAction::PageUp,
                     KeyCode::PageDown => AppAction::PageDown,
+                    KeyCode::Left => AppAction::Left,
+                    KeyCode::Right => AppAction::Right,
                     _ => AppAction::None,
                 });
             }
@@ -64,16 +68,52 @@ pub fn apply_action(app: &mut App, action: AppAction) {
         AppAction::SelectTab(tab) => {
             app.selected_tab = tab;
         }
-        AppAction::ScrollUp => app.scroll_up(),
-        AppAction::ScrollDown => app.scroll_down(),
-        AppAction::PageUp => app.page_up(),
-        AppAction::PageDown => app.page_down(),
-        AppAction::ToggleSort => {
-            if app.sort_descending {
-                app.sort_descending = false;
+        AppAction::ScrollUp => {
+            if app.selected_tab == Tab::Disks {
+                app.disk_scroll_up();
             } else {
-                app.sort_column = app.sort_column.next();
-                app.sort_descending = true;
+                app.scroll_up();
+            }
+        }
+        AppAction::ScrollDown => {
+            if app.selected_tab == Tab::Disks {
+                app.disk_scroll_down();
+            } else {
+                app.scroll_down();
+            }
+        }
+        AppAction::PageUp => {
+            if app.selected_tab == Tab::Disks {
+                app.disk_page_up();
+            } else {
+                app.page_up();
+            }
+        }
+        AppAction::PageDown => {
+            if app.selected_tab == Tab::Disks {
+                app.disk_page_down();
+            } else {
+                app.page_down();
+            }
+        }
+        AppAction::Left => {
+            if app.selected_tab == Tab::Disks {
+                app.disk_gauges_scroll_up();
+            }
+        }
+        AppAction::Right => {
+            if app.selected_tab == Tab::Disks {
+                app.disk_gauges_scroll_down(app.visible_disk_gauges.max(1));
+            }
+        }
+        AppAction::ToggleSort => {
+            if app.selected_tab == Tab::Processes {
+                if app.sort_descending {
+                    app.sort_descending = false;
+                } else {
+                    app.sort_column = app.sort_column.next();
+                    app.sort_descending = true;
+                }
             }
         }
         AppAction::ToggleHelp => {

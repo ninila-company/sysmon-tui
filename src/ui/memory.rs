@@ -3,7 +3,7 @@ use ratatui::layout::{Constraint, Layout, Rect};
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Gauge, Paragraph};
 
-pub fn draw(frame: &mut Frame, area: Rect, app: &crate::app::App) {
+pub fn draw(frame: &mut Frame, area: Rect, app: &mut crate::app::App) {
     let has_swap = app.has_swap();
 
     let constraints = if has_swap {

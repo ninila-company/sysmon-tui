@@ -142,9 +142,12 @@ pub struct App {
     pub selected_tab: Tab,
     pub sort_column: SortColumn,
     pub sort_descending: bool,
-    pub process_scroll: usize,
-    pub process_selected: usize,
-    pub visible_process_count: usize,
+     pub process_scroll: usize,
+     pub process_selected: usize,
+     pub visible_process_count: usize,
+     pub disk_selected: usize,
+     pub disk_gauges_scroll: usize,
+     pub visible_disk_gauges: usize,
     pub refresh_rate_ms: u64,
     pub min_terminal_size_met: bool,
     pub show_help: bool,
@@ -183,9 +186,12 @@ impl App {
             selected_tab: Tab::default(),
             sort_column: SortColumn::default(),
             sort_descending: true,
-            process_scroll: 0,
-            process_selected: 0,
-            visible_process_count: 0,
+             process_scroll: 0,
+             process_selected: 0,
+             visible_process_count: 0,
+             disk_selected: 0,
+             disk_gauges_scroll: 0,
+             visible_disk_gauges: 0,
             refresh_rate_ms,
             min_terminal_size_met: true,
             show_help: false,
@@ -339,6 +345,11 @@ impl App {
 
     pub fn update_disks(&mut self, disks: Vec<DiskInfo>) {
         self.disks = disks;
+        if self.disk_selected >= self.disks.len() && !self.disks.is_empty() {
+            self.disk_selected = self.disks.len() - 1;
+        } else if self.disks.is_empty() {
+            self.disk_selected = 0;
+        }
     }
 
     pub fn sorted_processes(&self) -> Vec<&ProcessInfo> {
@@ -377,6 +388,43 @@ impl App {
         self.process_selected += step;
         if self.process_selected >= self.processes.len() && !self.processes.is_empty() {
             self.process_selected = self.processes.len() - 1;
+        }
+    }
+
+    pub fn disk_scroll_up(&mut self) {
+        if self.disk_selected > 0 {
+            self.disk_selected -= 1;
+        }
+    }
+
+    pub fn disk_scroll_down(&mut self) {
+        if self.disk_selected + 1 < self.disks.len() {
+            self.disk_selected += 1;
+        }
+    }
+
+    pub fn disk_page_up(&mut self) {
+        let step = 5; // approximate visible disk count in table
+        self.disk_selected = self.disk_selected.saturating_sub(step);
+    }
+
+    pub fn disk_page_down(&mut self) {
+        let step = 5;
+        self.disk_selected += step;
+        if self.disk_selected >= self.disks.len() && !self.disks.is_empty() {
+            self.disk_selected = self.disks.len() - 1;
+        }
+    }
+
+    pub fn disk_gauges_scroll_up(&mut self) {
+        self.disk_gauges_scroll = self.disk_gauges_scroll.saturating_sub(1);
+    }
+
+    pub fn disk_gauges_scroll_down(&mut self, visible: usize) {
+        if visible == 0 { return; }
+        let max_scroll = self.disks.len().saturating_sub(visible);
+        if self.disk_gauges_scroll < max_scroll {
+            self.disk_gauges_scroll += 1;
         }
     }
 }

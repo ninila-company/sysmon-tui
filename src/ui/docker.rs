@@ -5,7 +5,7 @@ use ratatui::widgets::{Block, Paragraph, Row, Table};
 
 use crate::app::App;
 
-pub fn draw(frame: &mut Frame, area: Rect, app: &App) {
+pub fn draw(frame: &mut Frame, area: Rect, app: &mut App) {
     if let Some(ref err) = app.docker_error {
         draw_error(frame, area, err);
         return;
